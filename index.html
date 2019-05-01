@@ -250,6 +250,318 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="likongqiang.xyz/2019/05/01/elf学习笔记/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="怪道亦有道">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/images/avatar.jpeg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="guaidaoyiyoudao">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h2 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2019/05/01/elf学习笔记/" itemprop="url">elf学习笔记</a></h2>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2019-05-01T14:01:35+08:00">
+                2019-05-01
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">In</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Linux/" itemprop="url" rel="index">
+                    <span itemprop="name">Linux</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h2 id="ELF文件结构"><a href="#ELF文件结构" class="headerlink" title="ELF文件结构"></a>ELF文件结构</h2><h3 id="ELF-header"><a href="#ELF-header" class="headerlink" title="ELF header"></a>ELF header</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">#define EI_NIDENT 16</span><br><span class="line"></span><br><span class="line">typedef struct &#123;</span><br><span class="line">    unsigned char e_ident[EI_NIDENT];</span><br><span class="line">    uint16_t      e_type;</span><br><span class="line">    uint16_t      e_machine;</span><br><span class="line">    uint32_t      e_version;</span><br><span class="line">    ElfN_Addr     e_entry;</span><br><span class="line">    ElfN_Off      e_phoff;</span><br><span class="line">    ElfN_Off      e_shoff;</span><br><span class="line">    uint32_t      e_flags;</span><br><span class="line">    uint16_t      e_ehsize;</span><br><span class="line">    uint16_t      e_phentsize;</span><br><span class="line">    uint16_t      e_phnum;</span><br><span class="line">    uint16_t      e_shentsize;</span><br><span class="line">    uint16_t      e_shnum;</span><br><span class="line">    uint16_t      e_shstrndx;</span><br><span class="line">&#125; ElfN_Ehdr;</span><br></pre></td></tr></table></figure>
+<h4 id="e-ident"><a href="#e-ident" class="headerlink" title="e_ident"></a><code>e_ident</code></h4><p>指定了如何去解释该文件。</p>
+<p>0-3四个字节的内容是一个魔数，内容为<code>0x7f</code>,<code>E</code>,<code>L</code>,<code>F</code>。</p>
+<h5 id="EI-CLASS"><a href="#EI-CLASS" class="headerlink" title="EI_CLASS"></a><strong>EI_CLASS</strong></h5><p>第五个字节，显示二进制文件的架构：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">ELFCLASSNONE  This class is invalid.</span><br><span class="line">ELFCLASS32    This defines the 32-bit architecture.  It supports machines with files and virtual address spaces up to 4 Gigabytes.</span><br><span class="line">ELFCLASS64    This defines the 64-bit architecture.</span><br></pre></td></tr></table></figure></p>
+<p><code>01</code>表示是32位，<code>02</code>表示是64位。</p>
+<h5 id="EI-DATA"><a href="#EI-DATA" class="headerlink" title="EI_DATA"></a><strong>EI_DATA</strong></h5><p>第六个字节显示是大端还是小端:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">ELFDATANONE   Unknown data format.</span><br><span class="line">ELFDATA2LSB   Two&apos;s complement, little-endian.</span><br><span class="line">ELFDATA2MSB   Two&apos;s complement, big-endian.</span><br></pre></td></tr></table></figure></p>
+<p><code>01</code> 小端，<code>02</code>大端。</p>
+<blockquote>
+<p>大端模式，是指数据的高字节保存在内存的低地址中，而数据的低字节保存在内存的高地址中，这样的存储模式有点儿类似于把数据当作字符串顺序处理：地址由小向大增加，而数据从高位往低位放；这和我们的阅读习惯一致。<br>小端模式，是指数据的高字节保存在内存的高地址中，而数据的低字节保存在内存的低地址中，这种存储模式将地址的高低和数据位权有效地结合起来，高地址部分权值高，低地址部分权值低。</p>
+</blockquote>
+<h5 id="EI-VERSION"><a href="#EI-VERSION" class="headerlink" title="EI_VERSION"></a><strong>EI_VERSION</strong></h5><p>第七个字节，显示版本号：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">EV_NONE       Invalid version.</span><br><span class="line">EV_CURRENT    Current version.</span><br></pre></td></tr></table></figure>
+<p><code>01</code>当前版本</p>
+<h5 id="EI-OSABI"><a href="#EI-OSABI" class="headerlink" title="EI_OSABI"></a><strong>EI_OSABI</strong></h5><p>第八个字节，选择的操作系统和ABI版本:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">ELFOSABI_NONE        Same as ELFOSABI_SYSV</span><br><span class="line">ELFOSABI_SYSV        UNIX System V ABI</span><br><span class="line">ELFOSABI_HPUX        HP-UX ABI</span><br><span class="line">ELFOSABI_NETBSD      NetBSD ABI</span><br><span class="line">ELFOSABI_LINUX       Linux ABI</span><br><span class="line">ELFOSABI_SOLARIS     Solaris ABI</span><br><span class="line">ELFOSABI_IRIX        IRIX ABI</span><br><span class="line">ELFOSABI_FREEBSD     FreeBSD ABI</span><br><span class="line">ELFOSABI_TRU64       TRU64 UNIX ABI</span><br><span class="line">ELFOSABI_ARM         ARM architecture ABI</span><br><span class="line">ELFOSABI_STANDALONE  Stand-alone (embedded) ABI</span><br></pre></td></tr></table></figure></p>
+<p><strong>EI_ABIVERSION</strong> 第九个字节，ABI版本号,用来辨别ABI版本。这个的值取依赖于<code>EI_OSABI</code></p>
+<p><strong>EI_PAD</strong> 填充开始，通常值被设为0。应用程序应该忽略这些值，这个区域可能在以后会有其他的用途，目前无用。</p>
+<p><strong>EI_NIDENT</strong> e_ident的数组的大小，从上面的定义看是16个字节。</p>
+<h4 id="e-type"><a href="#e-type" class="headerlink" title="e_type"></a><strong>e_type</strong></h4><p>17-18字节<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">ET_NONE         An unknown type.</span><br><span class="line">ET_REL          A relocatable file.</span><br><span class="line">ET_EXEC         An executable file.</span><br><span class="line">ET_DYN          A shared object.</span><br><span class="line">ET_CORE         A core file.</span><br></pre></td></tr></table></figure></p>
+<p>指定了文件的类型</p>
+<h4 id="e-machine"><a href="#e-machine" class="headerlink" title="e_machine"></a><strong>e_machine</strong></h4><p>19-20字节<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">EM_NONE         An unknown machine</span><br><span class="line">EM_M32          AT&amp;T WE 32100</span><br><span class="line">EM_SPARC        Sun Microsystems SPARC</span><br><span class="line">EM_386          Intel 80386</span><br><span class="line">EM_68K          Motorola 68000</span><br><span class="line">EM_88K          Motorola 88000</span><br><span class="line">EM_860          Intel 80860</span><br><span class="line">EM_MIPS         MIPS RS3000 (big-endian only)</span><br><span class="line">EM_PARISC       HP/PA</span><br><span class="line">EM_SPARC32PLUS  SPARC with enhanced instruction set</span><br><span class="line">EM_PPC          PowerPC</span><br><span class="line">EM_PPC64        PowerPC 64-bit</span><br><span class="line">EM_S390         IBM S/390</span><br><span class="line">EM_ARM          Advanced RISC Machines</span><br><span class="line">EM_SH           Renesas SuperH</span><br><span class="line">EM_SPARCV9      SPARC v9 64-bit</span><br><span class="line">EM_IA_64        Intel Itanium</span><br><span class="line">EM_X86_64       AMD x86-64</span><br><span class="line">EM_VAX          DEC Vax</span><br></pre></td></tr></table></figure></p>
+<p>对于单个文件所要求的架构</p>
+<h4 id="e-version"><a href="#e-version" class="headerlink" title="e_version"></a><strong>e_version</strong></h4><p>20-24 字节<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">EV_NONE         Invalid version</span><br><span class="line">EV_CURRENT      Current version</span><br></pre></td></tr></table></figure></p>
+<p>文件版本号</p>
+<h4 id="e-entry"><a href="#e-entry" class="headerlink" title="e_entry"></a><strong>e_entry</strong></h4><p>25-32字节<br>32位系统就是4个字节大小</p>
+<p>给出了程序的入口点，没有的话就是0</p>
+<h4 id="e-phoff"><a href="#e-phoff" class="headerlink" title="e_phoff"></a><strong>e_phoff</strong></h4><p>33-40字节<br>32位系统就是4个字节大小<br>程序头的字节偏移量</p>
+<h4 id="e-shoff"><a href="#e-shoff" class="headerlink" title="e_shoff"></a><strong>e_shoff</strong></h4><p>41-48字节<br>32位系统就是4个字节大小<br>节区头的字节偏移量</p>
+<h4 id="e-flags"><a href="#e-flags" class="headerlink" title="e_flags"></a><strong>e_flags</strong></h4><p>49-52字节<br>目前未定义</p>
+<h4 id="e-ehsize"><a href="#e-ehsize" class="headerlink" title="e_ehsize"></a><strong>e_ehsize</strong></h4><p>53-54 字节<br>elf header的大小</p>
+<h4 id="e-phentsize"><a href="#e-phentsize" class="headerlink" title="e_phentsize"></a><strong>e_phentsize</strong></h4><p>55-56字节<br>程序头在程序头表中的大小，所有的程序头都是同样大小。</p>
+<h4 id="e-phnum"><a href="#e-phnum" class="headerlink" title="e_phnum"></a><strong>e_phnum</strong></h4><p>57-58字节<br>程序头的数量</p>
+<h4 id="e-shentsize"><a href="#e-shentsize" class="headerlink" title="e_shentsize"></a><strong>e_shentsize</strong></h4><p>59-60字节<br>节区头的大小</p>
+<h4 id="e-shnum"><a href="#e-shnum" class="headerlink" title="e_shnum"></a><strong>e_shnum</strong></h4><p>61-62字节<br>节区头的数量</p>
+<h4 id="e-shstrndx"><a href="#e-shstrndx" class="headerlink" title="e_shstrndx"></a><strong>e_shstrndx</strong></h4><p>63-64字节</p>
+<blockquote>
+<p>This member holds the section header table index of the entry associated  with the section name string table.  If the file has no section name string table, this member holds the value SHN_UNDEF.</p>
+</blockquote>
+<h3 id="程序头"><a href="#程序头" class="headerlink" title="程序头"></a>程序头</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">typedef struct &#123;</span><br><span class="line">    uint32_t   p_type;</span><br><span class="line">    Elf32_Off  p_offset;</span><br><span class="line">    Elf32_Addr p_vaddr;</span><br><span class="line">    Elf32_Addr p_paddr;</span><br><span class="line">    uint32_t   p_filesz;</span><br><span class="line">    uint32_t   p_memsz;</span><br><span class="line">    uint32_t   p_flags;</span><br><span class="line">    uint32_t   p_align;</span><br><span class="line">    &#125; Elf32_Phdr;</span><br><span class="line">typedef struct &#123;</span><br><span class="line">    uint32_t   p_type;</span><br><span class="line">    uint32_t   p_flags;</span><br><span class="line">    Elf64_Off  p_offset;</span><br><span class="line">    Elf64_Addr p_vaddr;</span><br><span class="line">    Elf64_Addr p_paddr;</span><br><span class="line">    uint64_t   p_filesz;</span><br><span class="line">    uint64_t   p_memsz;</span><br><span class="line">    uint64_t   p_align;</span><br><span class="line">&#125; Elf64_Phdr;</span><br></pre></td></tr></table></figure>
+<p>程序头只对可执行文件和共享目标文件有效。</p>
+<h4 id="p-type"><a href="#p-type" class="headerlink" title="p_type"></a><strong>p_type</strong></h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">#define	PT_NULL		0		/* Program header table entry unused */</span><br><span class="line">#define PT_LOAD		1		/* Loadable program segment */</span><br><span class="line">#define PT_DYNAMIC	2		/* Dynamic linking information */</span><br><span class="line">#define PT_INTERP	3		/* Program interpreter */</span><br><span class="line">#define PT_NOTE		4		/* Auxiliary information */</span><br><span class="line">#define PT_SHLIB	5		/* Reserved */</span><br><span class="line">#define PT_PHDR		6		/* Entry for header table itself */</span><br><span class="line">#define PT_TLS		7		/* Thread-local storage segment */</span><br><span class="line">#define	PT_NUM		8		/* Number of defined types */</span><br><span class="line">#define PT_LOOS		0x60000000	/* Start of OS-specific */</span><br><span class="line">#define PT_GNU_EH_FRAME	0x6474e550	/* GCC .eh_frame_hdr segment */</span><br><span class="line">#define PT_GNU_STACK	0x6474e551	/* Indicates stack executability */</span><br><span class="line">#define PT_GNU_RELRO	0x6474e552	/* Read-only after relocation */</span><br><span class="line">#define PT_LOSUNW	0x6ffffffa</span><br><span class="line">#define PT_SUNWBSS	0x6ffffffa	/* Sun Specific segment */</span><br><span class="line">#define PT_SUNWSTACK	0x6ffffffb	/* Stack segment */</span><br><span class="line">#define PT_HISUNW	0x6fffffff</span><br><span class="line">#define PT_HIOS		0x6fffffff	/* End of OS-specific */</span><br><span class="line">#define PT_LOPROC	0x70000000	/* Start of processor-specific */</span><br><span class="line">#define PT_HIPROC	0x7fffffff	/* End of processor-specific */</span><br></pre></td></tr></table></figure>
+<h5 id="PT-PHDR"><a href="#PT-PHDR" class="headerlink" title="PT_PHDR"></a>PT_PHDR</h5><p>定义文件头表在文件和内存image的位置和大小，只会有一个这样类型的文件头</p>
+<h5 id="PT-GNU-STACK"><a href="#PT-GNU-STACK" class="headerlink" title="PT_GNU_STACK"></a>PT_GNU_STACK</h5><p>通过p_flags来控制栈的状态</p>
+<h4 id="p-flags"><a href="#p-flags" class="headerlink" title="p_flags"></a><strong>p_flags</strong></h4><blockquote>
+<p>PF_X   An executable segment.<br>PF_W   A writable segment.<br>PF_R   A readable segment.</p>
+</blockquote>
+<h4 id="p-offset"><a href="#p-offset" class="headerlink" title="p_offset"></a><strong>p_offset</strong></h4><p>从文件开始到首个字节出现的偏移量。</p>
+<h3 id="section-header"><a href="#section-header" class="headerlink" title="section header"></a>section header</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line">typedef struct &#123;</span><br><span class="line">    uint32_t   sh_name;</span><br><span class="line">    uint32_t   sh_type;</span><br><span class="line">    uint32_t   sh_flags;</span><br><span class="line">    Elf32_Addr sh_addr;</span><br><span class="line">    Elf32_Off  sh_offset;</span><br><span class="line">    uint32_t   sh_size;</span><br><span class="line">    uint32_t   sh_link;</span><br><span class="line">    uint32_t   sh_info;</span><br><span class="line">    uint32_t   sh_addralign;</span><br><span class="line">    uint32_t   sh_entsize;</span><br><span class="line">&#125; Elf32_Shdr;</span><br><span class="line"></span><br><span class="line">typedef struct &#123;</span><br><span class="line">    uint32_t   sh_name;</span><br><span class="line">    uint32_t   sh_type;</span><br><span class="line">    uint64_t   sh_flags;</span><br><span class="line">    Elf64_Addr sh_addr;</span><br><span class="line">    Elf64_Off  sh_offset;</span><br><span class="line">    uint64_t   sh_size;</span><br><span class="line">    uint32_t   sh_link;</span><br><span class="line">    uint32_t   sh_info;</span><br><span class="line">    uint64_t   sh_addralign;</span><br><span class="line">    uint64_t   sh_entsize;</span><br><span class="line">&#125; Elf64_Shdr;</span><br></pre></td></tr></table></figure>
+<h4 id="bss"><a href="#bss" class="headerlink" title=".bss"></a>.bss</h4><p>保存了未初始化的数据，定义这个section,当程序运行的时候，会把数据全部初始化为0</p>
+<h4 id="data"><a href="#data" class="headerlink" title=".data"></a>.data</h4><p>保存了初始化的数据</p>
+<h4 id="text"><a href="#text" class="headerlink" title=".text"></a>.text</h4><p>保存了可执行指令</p>
+<h4 id="rodata"><a href="#rodata" class="headerlink" title=".rodata"></a>.rodata</h4><p>保存了只读数据</p>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="likongqiang.xyz/2019/04/30/README/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="怪道亦有道">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/images/avatar.jpeg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="guaidaoyiyoudao">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h2 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2019/04/30/README/" itemprop="url">Untitled</a></h2>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2019-04-30T19:18:58+08:00">
+                2019-04-30
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h1 id="blogBackup"><a href="#blogBackup" class="headerlink" title="blogBackup"></a>blogBackup</h1><p>blog backup</p>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="likongqiang.xyz/2019/04/30/命令行下连接wifi/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -735,7 +1047,7 @@
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">3</span>
+                  <span class="site-state-item-count">5</span>
                   <span class="site-state-item-name">posts</span>
                 </a>
               </div>
@@ -757,7 +1069,7 @@
               
               <div class="site-state-item site-state-tags">
                 <a href="/tags/index.html">
-                  <span class="site-state-item-count">5</span>
+                  <span class="site-state-item-count">6</span>
                   <span class="site-state-item-name">tags</span>
                 </a>
               </div>
